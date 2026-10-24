@@ -1,0 +1,4 @@
+name,orders_per_month,failure_rate_pct,shipping_one_way,packaging_cost
+Imported baseline,800,24,60,14
+Imported after fixes,800,17,60,14
+Imported courier switch,800,21,52,14

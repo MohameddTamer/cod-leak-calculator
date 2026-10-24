@@ -1,0 +1,7 @@
+backend/*.db
+backend/*.log
+*.log
+__pycache__/
+*.pyc
+backups/
+config.env

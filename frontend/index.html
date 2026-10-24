@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COD Leak Calculator — the money lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bone:#F2EFE9; --ink:#101010; --green:#0E7A3D; --red:#D92B1F; --faded:#5C574E;
+    --disp:"Archivo","Arial Narrow",sans-serif;
+    --body:"Space Grotesk","Segoe UI",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;border-radius:0}
+  html{font-variant-numeric:tabular-nums}
+  body{font-family:var(--body);background:var(--bone);color:var(--ink);margin:0;padding:28px 24px 64px}
+  .wrap{max-width:1060px;margin:0 auto}
+  .brandrow{display:flex;align-items:center;gap:12px;border-bottom:3px solid var(--ink);padding-bottom:12px}
+  .brandrow .word{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:.4px;text-transform:uppercase}
+  .brandrow .tag{margin-left:auto;font-size:13px;color:var(--faded);text-align:right;max-width:380px}
+  h1{font-family:var(--disp);font-weight:750;font-size:clamp(24px,3.4vw,36px);line-height:1.08;margin:26px 0 4px;letter-spacing:-.3px}
+  .sub{color:var(--faded);margin:0 0 8px;max-width:640px;font-size:15.5px}
+
+  /* the one number */
+  .hero{border-bottom:3px solid var(--ink);padding:10px 0 18px}
+  .hero .lbl{font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase}
+  #monthly{font-family:var(--disp);font-size:min(12vw,132px);line-height:.95;letter-spacing:-2px;
+    font-variation-settings:"wght" 350;display:block;white-space:nowrap}
+  #monthly small{font-size:.32em;font-weight:600;letter-spacing:0;color:var(--faded)}
+  #monthly.over{color:var(--red)}
+  .hero .under{display:flex;gap:26px;flex-wrap:wrap;margin-top:6px;font-size:15px}
+  .hero .under b{font-family:var(--disp);font-size:19px}
+  .good{color:var(--green)}
+
+  /* instruments: full-width ruled slider rows */
+  .inst{border-bottom:1px solid var(--ink);padding:14px 0 16px;display:grid;grid-template-columns:250px 1fr 130px;gap:18px;align-items:center}
+  .inst label{font-weight:700;font-size:15px}
+  .inst label small{display:block;font-weight:400;color:var(--faded);font-size:12.5px;margin-top:2px}
+  .inst output{font-family:var(--disp);font-weight:700;font-size:24px;text-align:right}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:34px;background:transparent;cursor:pointer}
+  input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--ink)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:30px;margin-top:-14px;
+    background:var(--bone);border:3px solid var(--ink);border-radius:0}
+  input[type=range]::-moz-range-track{height:3px;background:var(--ink)}
+  input[type=range]::-moz-range-thumb{width:16px;height:26px;background:var(--bone);border:3px solid var(--ink);border-radius:0}
+  input[type=range]:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+  .secttl{font-family:var(--disp);font-weight:800;font-size:21px;text-transform:uppercase;letter-spacing:.4px;
+    border-bottom:3px solid var(--ink);padding-bottom:6px;margin:38px 0 0}
+  .secttl small{font-family:var(--body);font-weight:400;text-transform:none;letter-spacing:0;color:var(--faded);font-size:13.5px;margin-left:10px}
+  .rowline{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid #CFC9BC;font-size:15.5px}
+  .rowline b{font-family:var(--disp);font-size:17px}
+  .bill{padding-top:6px}
+  .fieldline{padding:12px 0;border-bottom:1px solid #CFC9BC}
+  .fieldline label{display:block;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+  input[type=text],input[type=password],input[type=number],select{
+    width:100%;font:inherit;font-size:16px;color:var(--ink);background:transparent;border:none;
+    border-bottom:2px solid var(--ink);padding:5px 0;outline:none;border-radius:0;appearance:none;-webkit-appearance:none}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23101010'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right center;cursor:pointer}
+  input:focus,select:focus{border-bottom-color:var(--red)}
+  .btn{font-family:var(--body);font-weight:700;font-size:14px;letter-spacing:.5px;text-transform:uppercase;
+    padding:11px 18px;border:2px solid var(--ink);background:var(--ink);color:var(--bone);cursor:pointer;margin:6px 8px 6px 0}
+  .btn:hover{background:var(--bone);color:var(--ink)}
+  .btn.plain{background:transparent;color:var(--ink)}
+  .btn.plain:hover{background:var(--ink);color:var(--bone)}
+  .btn.small{padding:6px 11px;font-size:12px;margin:2px 4px 2px 0}
+  .err{color:var(--red);font-size:14px;min-height:18px}
+  .muted{color:var(--faded)}
+  .inline3{display:grid;grid-template-columns:1fr 1fr auto;gap:18px;align-items:end}
+  .inline3 .fieldline{border-bottom:none;padding-bottom:0}
+
+  /* scenarios as type specimens */
+  .spec{display:grid;grid-template-columns:34px 1fr auto auto;gap:14px;align-items:baseline;
+    padding:13px 0;border-bottom:1px solid #CFC9BC}
+  .spec .name{font-family:var(--disp);font-weight:700;font-size:19px}
+  .spec .meta{color:var(--faded);font-size:13.5px}
+  .spec .loss{font-family:var(--disp);font-weight:800;font-size:25px;text-align:right}
+  .spec .loss small{display:block;font-family:var(--body);font-weight:400;font-size:12px;color:var(--faded)}
+  .spec input[type=checkbox]{appearance:none;-webkit-appearance:none;width:22px;height:22px;border:2px solid var(--ink);
+    background:transparent;cursor:pointer;margin:0;position:relative;top:4px;border-radius:0}
+  .spec input[type=checkbox]:checked{background:var(--ink)}
+  .spec input[type=checkbox]:checked::after{content:"";position:absolute;inset:4px;background:var(--bone)}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:10px}
+  th{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;text-align:left;border-bottom:2px solid var(--ink);padding:6px}
+  td{border-bottom:1px solid #CFC9BC;padding:7px 6px}
+  .filepick{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px}
+  .filepick input[type=file]{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+  #loginCard{max-width:420px;margin-top:22px}
+  .foot{margin-top:44px;border-top:1px solid #CFC9BC;padding-top:12px;color:var(--faded);font-size:13.5px;max-width:700px}
+  #printView{display:none}
+  @media(max-width:760px){
+    .inst{grid-template-columns:1fr;gap:4px}
+    .inst output{text-align:left}
+    .inline3{grid-template-columns:1fr}
+    .spec{grid-template-columns:30px 1fr;gap:6px}
+    .spec .loss{text-align:left}
+  }
+  @media print{
+    body{padding:0;background:#fff}
+    #app,#loginCard,.noprint{display:none !important}
+    #printView{display:block}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brandrow">
+    <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+      <rect x="2" y="2" width="36" height="36" fill="none" stroke="#101010" stroke-width="3"/>
+      <path d="M9 12 L31 12 L20 30 Z" fill="none" stroke="#101010" stroke-width="2.5"/>
+      <circle cx="20" cy="19" r="2.6" fill="#D92B1F"/>
+    </svg>
+    <div class="word">COD Leak Calculator</div>
+    <div class="tag">The money lab. One number, set at the size it deserves.</div>
+  </div>
+
+  <div id="loginCard">
+    <h1>Sign in to your stores</h1>
+    <p class="sub">Scenarios stay saved per store, so next month starts from last month instead of from memory.</p>
+    <div class="fieldline"><label for="u">Username</label><input id="u" autocomplete="username"></div>
+    <div class="fieldline"><label for="p">Password</label><input id="p" type="password" autocomplete="current-password"></div>
+    <p><button class="btn" onclick="login()">Sign in</button></p>
+    <p class="muted" style="font-size:13px">Demo accounts for a local demo: owner / demo1234 and analyst / demo1234.</p>
+    <p class="err" id="loginErr"></p>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="inline3">
+      <div class="fieldline"><label for="storeSel">Store</label><select id="storeSel" onchange="loadAll()"></select></div>
+      <div class="fieldline"><label for="newStore">New store name</label><input id="newStore" type="text" placeholder="Fictional demo stores only here"></div>
+      <div><button class="btn plain" onclick="addStore()">Add store</button></div>
+    </div>
+
+    <h1>What is failed delivery costing this store?</h1>
+    <p class="sub">Four instruments give the leak. Drag them and watch the number.</p>
+
+    <div class="hero">
+      <span class="lbl">Lost every month</span>
+      <span id="monthly">0<small> EGP</small></span>
+      <div class="under">
+        <span>Failed orders a month <b id="failedCount">-</b></span>
+        <span>One failed order costs <b id="perFail">-</b></span>
+        <span>Every year <b id="yearly">-</b></span>
+        <span>Drop the rate 5 points, save <b class="good" id="saving">-</b></span>
+      </div>
+    </div>
+
+    <div class="inst"><label for="orders">Orders per month<small>Everything the store ships</small></label>
+      <input type="range" id="orders" min="0" max="5000" step="10" value="1000"><output id="ordersOut">1,000</output></div>
+    <div class="inst"><label for="rate">Failed delivery rate<small>Percent of orders that come back</small></label>
+      <input type="range" id="rate" min="0" max="60" step="0.5" value="25"><output id="rateOut">25%</output></div>
+    <div class="inst"><label for="ship">Shipping, one way<small>EGP per parcel</small></label>
+      <input type="range" id="ship" min="0" max="150" step="1" value="65"><output id="shipOut">65</output></div>
+    <div class="inst"><label for="pack">Packaging + handling<small>Per failed order, EGP</small></label>
+      <input type="range" id="pack" min="0" max="60" step="1" value="15"><output id="packOut">15</output></div>
+    <div class="inst"><label for="thresh">Your pain threshold<small>Past this, the number turns red</small></label>
+      <input type="range" id="thresh" min="0" max="100000" step="1000" value="20000"><output id="threshOut">20,000</output></div>
+
+    <div class="fieldline" style="margin-top:18px"><label for="scenarioName">Scenario name</label>
+      <input id="scenarioName" type="text" placeholder="For example: October as it happened"></div>
+    <p><button class="btn" onclick="saveScenario()">Save scenario for this store</button>
+    <button class="btn plain" id="cancelEdit" style="display:none" onclick="resetForm()">Cancel edit</button></p>
+    <p class="err" id="saveErr"></p>
+
+    <h2 class="secttl">Saved scenarios <small>Type specimens, not cards. Tick two and compare them.</small></h2>
+    <div id="scenarioList"></div>
+    <p><button class="btn plain" onclick="compareSelected()">Compare ticked scenarios</button>
+    <button class="btn plain" onclick="downloadBackup()">Download backup</button>
+    <button class="btn plain" onclick="printReport()">Print report</button></p>
+    <div id="compareOut"></div>
+
+    <h2 class="secttl">Import scenarios <small>CSV</small></h2>
+    <p class="muted">Header: name,orders_per_month,failure_rate_pct,shipping_one_way,packaging_cost.
+    Duplicates are rejected and listed, never overwritten quietly.</p>
+    <div class="filepick">
+      <label class="btn plain" for="csvFile">Choose CSV file</label>
+      <input type="file" id="csvFile" accept=".csv">
+      <span id="csvName">No file chosen</span>
+      <button class="btn plain" onclick="importCsv()">Import into this store</button>
+    </div>
+    <div id="importOut"></div>
+
+    <h2 class="secttl">Recent history <small>Across stores</small></h2>
+    <div id="historyList"></div>
+
+    <p class="foot">A failed COD parcel costs shipping twice: once going out, once coming back. That is before
+    the ad spend that produced the order, and before the product sits in a return pile instead of
+    being sold to someone else.</p>
+  </div>
+
+  <div id="printView"></div>
+</div>
+<script>
+let token = sessionStorage.getItem('cod_token') || '';
+let editingId = null;
+let scenarios = [];
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const $ = id => document.getElementById(id);
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function calcValues(){
+  const orders = +$('orders').value || 0, rate = +$('rate').value || 0;
+  const ship = +$('ship').value || 0, pack = +$('pack').value || 0;
+  const failed = orders * rate / 100, perFail = ship * 2 + pack, monthly = failed * perFail;
+  const saving = orders * Math.min(5, rate) / 100 * perFail;
+  return {orders, rate, ship, pack, failed, perFail, monthly, yearly: monthly * 12, saving};
+}
+
+/* the figure is typeset, not just printed: its digits tween and its weight
+   swells with the loss. Weight is a data channel here, not decoration. */
+let shownMonthly = 0, tweenId = null;
+function typesetMonthly(target){
+  const el = $('monthly');
+  const paint = v => {
+    el.innerHTML = fmt(v) + '<small> EGP</small>';
+    const w = Math.round(300 + Math.min(1, v / 60000) * 600);
+    el.style.fontVariationSettings = `"wght" ${w}`;
+    el.classList.toggle('over', v > (+$('thresh').value || 0));
+  };
+  if (reduced){ shownMonthly = target; paint(target); return; }
+  cancelAnimationFrame(tweenId);
+  const from = shownMonthly, t0 = performance.now(), dur = 260;
+  const step = now => {
+    const t = Math.min(1, (now - t0) / dur);
+    const eased = 1 - Math.pow(1 - t, 3);
+    shownMonthly = from + (target - from) * eased;
+    paint(shownMonthly);
+    if (t < 1) tweenId = requestAnimationFrame(step);
+  };
+  tweenId = requestAnimationFrame(step);
+}
+function calc(){
+  const v = calcValues();
+  $('ordersOut').textContent = fmt(v.orders);
+  $('rateOut').textContent = (Math.round(v.rate * 10) / 10) + '%';
+  $('shipOut').textContent = fmt(v.ship);
+  $('packOut').textContent = fmt(v.pack);
+  $('threshOut').textContent = fmt(+$('thresh').value || 0);
+  typesetMonthly(v.monthly);
+  $('failedCount').textContent = fmt(v.failed);
+  $('perFail').textContent = fmt(v.perFail) + ' EGP';
+  $('yearly').textContent = fmt(v.yearly) + ' EGP';
+  $('saving').textContent = fmt(v.saving) + ' EGP / month';
+}
+['orders','rate','ship','pack','thresh'].forEach(id => $(id).addEventListener('input', calc));
+
+async function api(path, opts = {}){
+  const r = await fetch(path, {headers: {'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'}, ...opts});
+  if (r.status === 401) throw new Error('Sign in again, the session ended.');
+  return r;
+}
+async function login(){
+  const r = await fetch('/api/login', {method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({username: $('u').value, password: $('p').value})});
+  if (!r.ok){ $('loginErr').textContent = 'Wrong username or password.'; return; }
+  const body = await r.json();
+  token = body.token;
+  sessionStorage.setItem('cod_token', token);
+  startApp();
+}
+async function startApp(){
+  const r = await api('/api/stores');
+  const body = await r.json();
+  $('storeSel').innerHTML = body.stores.map(s => `<option value="${s.id}">${s.name} (${s.currency})</option>`).join('');
+  $('loginCard').style.display = 'none';
+  $('app').style.display = 'block';
+  loadAll();
+}
+async function addStore(){
+  const name = $('newStore').value.trim();
+  if (!name) return;
+  const r = await api('/api/stores', {method: 'POST', body: JSON.stringify({name, currency: 'EGP'})});
+  if (!r.ok){ alert((await r.json()).error); return; }
+  $('newStore').value = '';
+  startApp();
+}
+async function loadAll(){ loadScenarios(); loadHistory(); }
+async function loadScenarios(){
+  const r = await api('/api/scenarios?store_id=' + $('storeSel').value);
+  const body = await r.json();
+  scenarios = body.scenarios;
+  $('scenarioList').innerHTML = scenarios.length ? scenarios.map(s =>
+    `<div class="spec"><input type="checkbox" class="cmp" value="${s.id}" aria-label="Compare ${s.name}">
+      <div><span class="name">${s.name}</span><div class="meta">${fmt(s.orders_per_month)} orders · ${s.failure_rate_pct}% fail · ship ${fmt(s.shipping_one_way)} · pack ${fmt(s.packaging_cost)}</div></div>
+      <div class="loss">${fmt(s.monthly_loss)}<small>EGP lost / month</small></div>
+      <div><button class="btn small plain" onclick="editScenario(${s.id})">Edit</button><button class="btn small plain" onclick="deleteScenario(${s.id})">Delete</button></div>
+    </div>`).join('')
+    : '<p class="muted">No scenarios saved for this store yet.</p>';
+}
+async function loadHistory(){
+  const r = await api('/api/history');
+  const body = await r.json();
+  $('historyList').innerHTML = body.history.map(s =>
+    `<div class="rowline"><span>${s.store_name}: ${s.name}</span><b>${fmt(s.monthly_loss)} EGP / month</b></div>`).join('') || '<p class="muted">Nothing yet.</p>';
+}
+function resetForm(){
+  editingId = null;
+  $('scenarioName').value = '';
+  $('cancelEdit').style.display = 'none';
+}
+async function saveScenario(){
+  const v = calcValues();
+  const payload = {name: $('scenarioName').value.trim(), orders_per_month: v.orders, failure_rate_pct: v.rate,
+    shipping_one_way: v.ship, packaging_cost: v.pack};
+  let r;
+  if (editingId){
+    r = await api('/api/scenarios/' + editingId, {method: 'PUT', body: JSON.stringify(payload)});
+  } else {
+    r = await api('/api/scenarios', {method: 'POST', body: JSON.stringify({store_id: +$('storeSel').value, ...payload})});
+  }
+  if (!r.ok){ $('saveErr').textContent = (await r.json()).error; return; }
+  $('saveErr').textContent = '';
+  resetForm();
+  loadAll();
+}
+function editScenario(id){
+  const s = scenarios.find(x => x.id === id);
+  if (!s) return;
+  editingId = id;
+  $('orders').value = s.orders_per_month; $('rate').value = s.failure_rate_pct;
+  $('ship').value = s.shipping_one_way; $('pack').value = s.packaging_cost;
+  $('scenarioName').value = s.name;
+  $('cancelEdit').style.display = 'inline-block';
+  calc();
+  window.scrollTo({top: 0, behavior: reduced ? 'auto' : 'smooth'});
+}
+async function deleteScenario(id){
+  if (!confirm('Delete this scenario?')) return;
+  await api('/api/scenarios/' + id, {method: 'DELETE'});
+  loadAll();
+}
+function svgCompare(rows){
+  const top = Math.max(...rows.map(r => r.monthly_loss), 1);
+  const rowH = 38, width = 680, height = 24 + rowH * rows.length;
+  let parts = [`<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" style="max-width:100%">`];
+  rows.forEach((r, i) => {
+    const y = 8 + i * rowH, w = Math.round(330 * r.monthly_loss / top);
+    parts.push(`<text x="0" y="${y + 17}" font-size="14" font-weight="700" fill="#101010">${r.name}</text>`);
+    parts.push(`<rect x="210" y="${y}" width="${w}" height="20" fill="#101010"></rect>`);
+    parts.push(`<text x="${218 + w}" y="${y + 16}" font-size="13" fill="#101010">${fmt(r.monthly_loss)} / month</text>`);
+  });
+  parts.push('</svg>');
+  return parts.join('');
+}
+let lastComparison = [];
+async function compareSelected(){
+  const ids = [...document.querySelectorAll('.cmp:checked')].map(x => x.value);
+  if (!ids.length){ $('compareOut').innerHTML = '<p class="err">Tick at least one scenario first.</p>'; return; }
+  const r = await api('/api/compare?ids=' + ids.join(','));
+  const body = await r.json();
+  lastComparison = body.comparison;
+  $('compareOut').innerHTML = '<h3 style="font-family:var(--disp)">Comparison</h3>' + svgCompare(lastComparison) +
+    '<table><tr><th>Scenario</th><th>Failed orders</th><th>Cost per failed</th><th>Monthly loss</th><th>Yearly loss</th><th>Saving if rate drops 5 pts</th></tr>' +
+    lastComparison.map(s => `<tr><td>${s.name}</td><td>${fmt(s.failed_orders)}</td><td>${fmt(s.cost_per_failed)}</td><td>${fmt(s.monthly_loss)}</td><td>${fmt(s.yearly_loss)}</td><td>${fmt(s.saving_if_rate_drops_5pts)}</td></tr>`).join('') + '</table>';
+}
+async function importCsv(){
+  const file = $('csvFile').files[0];
+  if (!file){ $('importOut').innerHTML = '<p class="err">Pick a CSV file first.</p>'; return; }
+  const text = await file.text();
+  const r = await api('/api/import', {method: 'POST', body: JSON.stringify({store_id: +$('storeSel').value, csv: text})});
+  const body = await r.json();
+  if (!r.ok){ $('importOut').innerHTML = '<p class="err">' + body.error + '</p>'; return; }
+  $('importOut').innerHTML = `<p>Imported ${body.imported}. Rejected ${body.rejected.length}.</p>` +
+    (body.rejected.length ? '<ul>' + body.rejected.map(x => `<li>Row ${x.row}: ${x.name || '(no name)'}: ${x.reason}</li>`).join('') + '</ul>' : '');
+  loadAll();
+}
+async function downloadBackup(){
+  const r = await api('/api/backup');
+  const blob = await r.blob();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'cod-leak-backup.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function printReport(){
+  const rows = lastComparison.length ? lastComparison : scenarios;
+  $('printView').innerHTML = '<h1>COD leak report</h1><p>Store scenarios and what failed delivery costs each month.</p>' +
+    (rows.length ? svgCompare(rows) : '<p>No scenarios.</p>') +
+    '<table><tr><th>Scenario</th><th>Monthly loss</th><th>Yearly loss</th></tr>' +
+    rows.map(s => `<tr><td>${s.name}</td><td>${fmt(s.monthly_loss)}</td><td>${fmt(s.yearly_loss)}</td></tr>`).join('') + '</table>';
+  window.print();
+}
+$('csvFile').addEventListener('change', e => {
+  $('csvName').textContent = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
+});
+calc();
+if (token) startApp().catch(() => { sessionStorage.removeItem('cod_token'); });
+</script>
+</body>
+</html>
