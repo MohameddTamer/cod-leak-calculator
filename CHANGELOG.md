@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4
+
+The backend is gone. The calculator is a static app again: `index.html`,
+`app.js` and `style.css`, no Python, no SQLite, no server, no accounts.
+Saved scenarios moved from the database into the browser's localStorage,
+and the store system collapsed into an optional text label on each
+scenario. The maths, the seed figures, the import rejection rules and the
+comparison order are unchanged, and the Kinetic Type Money Lab look is
+untouched. The old Python tests are replaced by a node suite that checks
+the same calculation cases. See README.md for the new run instructions.
+
 ## 0.3
 
 The calculator became a money lab. The monthly loss figure is now set at up to 12vw in Archivo Variable, and its weight swells as the loss grows, so the number does not just change, it gets heavier. The four number inputs became ruled slider instruments with large readouts; a fifth slider sets the owner's own pain threshold, past which the figure turns hot red. Saved scenarios stack as typographic specimens instead of cards, and the Georgia serif paper look is retired. English throughout, as it already was; no backend logic or saved number moved. See DESIGN.md for the direction and CRITIQUE.md for the evidence.

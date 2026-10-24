@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COD Leak Calculator — the money lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="brandrow">
+    <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+      <rect x="2" y="2" width="36" height="36" fill="none" stroke="#101010" stroke-width="3"/>
+      <path d="M9 12 L31 12 L20 30 Z" fill="none" stroke="#101010" stroke-width="2.5"/>
+      <circle cx="20" cy="19" r="2.6" fill="#D92B1F"/>
+    </svg>
+    <div class="word">COD Leak Calculator</div>
+    <div class="tag">The money lab. One number, set at the size it deserves.</div>
+  </div>
+
+  <h1>What is failed delivery costing this store?</h1>
+  <p class="sub">Four instruments give the leak. Drag them and watch the number. No server,
+  no account: everything you save stays in this browser.</p>
+
+  <div class="hero">
+    <span class="lbl">Lost every month</span>
+    <span id="monthly">0<small> EGP</small></span>
+    <div class="under">
+      <span>Failed orders a month <b id="failedCount">-</b></span>
+      <span>One failed order costs <b id="perFail">-</b></span>
+      <span>Every year <b id="yearly">-</b></span>
+      <span>Drop the rate 5 points, save <b class="good" id="saving">-</b></span>
+    </div>
+  </div>
+
+  <div class="inst"><label for="orders">Orders per month<small>Everything the store ships</small></label>
+    <input type="range" id="orders" min="0" max="5000" step="10" value="1000"><output id="ordersOut">1,000</output></div>
+  <div class="inst"><label for="rate">Failed delivery rate<small>Percent of orders that come back</small></label>
+    <input type="range" id="rate" min="0" max="60" step="0.5" value="25"><output id="rateOut">25%</output></div>
+  <div class="inst"><label for="ship">Shipping, one way<small>EGP per parcel</small></label>
+    <input type="range" id="ship" min="0" max="150" step="1" value="65"><output id="shipOut">65</output></div>
+  <div class="inst"><label for="pack">Packaging + handling<small>Per failed order, EGP</small></label>
+    <input type="range" id="pack" min="0" max="60" step="1" value="15"><output id="packOut">15</output></div>
+  <div class="inst"><label for="thresh">Your pain threshold<small>Past this, the number turns red</small></label>
+    <input type="range" id="thresh" min="0" max="100000" step="1000" value="20000"><output id="threshOut">20,000</output></div>
+
+  <div class="inline3">
+    <div class="fieldline"><label for="scenarioName">Scenario name</label>
+      <input id="scenarioName" type="text" placeholder="For example: October as it happened"></div>
+    <div class="fieldline"><label for="storeLabel">Store label (optional)</label>
+      <input id="storeLabel" type="text" placeholder="Just a label on the scenario"></div>
+    <div><button class="btn" id="saveBtn">Save scenario</button>
+    <button class="btn plain" id="cancelEdit" style="display:none">Cancel edit</button></div>
+  </div>
+  <p class="err" id="saveErr"></p>
+
+  <h2 class="secttl">Saved scenarios <small>Type specimens, not cards. Tick two and compare them.</small></h2>
+  <div class="fieldline"><label for="search">Filter by name</label>
+    <input id="search" type="text" placeholder="Start typing a scenario name"></div>
+  <div id="scenarioList"></div>
+  <p><button class="btn plain" id="compareBtn">Compare ticked scenarios</button>
+  <button class="btn plain" id="backupBtn">Download backup</button>
+  <button class="btn plain" id="printBtn">Print report</button></p>
+  <div id="compareOut"></div>
+
+  <h2 class="secttl">Import scenarios <small>CSV</small></h2>
+  <p class="muted">Header: name,orders_per_month,failure_rate_pct,shipping_one_way,packaging_cost.
+  Duplicates are rejected and listed, never overwritten quietly.</p>
+  <div class="filepick">
+    <label class="btn plain" for="csvFile">Choose CSV file</label>
+    <input type="file" id="csvFile" accept=".csv">
+    <span id="csvName">No file chosen</span>
+    <button class="btn plain" id="importBtn">Import scenarios</button>
+  </div>
+  <div id="importOut"></div>
+
+  <h2 class="secttl">Recent history <small>Most recently touched first</small></h2>
+  <div id="historyList"></div>
+
+  <p class="foot">A failed COD parcel costs shipping twice: once going out, once coming back. That is before
+  the ad spend that produced the order, and before the product sits in a return pile instead of
+  being sold to someone else.</p>
+
+  <div id="printView"></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

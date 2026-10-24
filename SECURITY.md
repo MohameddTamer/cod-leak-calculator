@@ -1,18 +1,22 @@
 # Security — COD Leak Calculator
 
-Local demo posture, stated plainly. This version runs on one machine for one
-store's numbers; it is not hardened for the public internet.
+Static app posture, stated plainly. This version has no server, no
+accounts and no database, so there is nothing to log into and nothing
+to leak to another user. Everything a store owner types stays in their
+own browser.
 
-- Passwords are stored as PBKDF2 hashes with a per-user salt. The demo
-  accounts (owner / demo1234, analyst / demo1234) are printed in the README
-  on purpose and must be changed before real store figures go in.
-- Every route except login sits behind a bearer token, and scenarios are
-  scoped per store, so one store's saved numbers are never another's.
-- All SQL is parameterised. Scenario math is computed on the server from the
-  four stored inputs; the client cannot invent a monthly loss.
-- CSV import validates its header and reports duplicates and malformed rows
-  by name instead of merging them quietly. Backup export requires a token.
+- Saved scenarios live in the browser's localStorage under one key.
+  Clearing the browser's site data wipes them, and no copy exists
+  anywhere else unless the owner downloads the backup JSON.
+- Scenario and store names come from the owner, so they are escaped
+  before they reach the page. A name can never become markup.
+- CSV import validates its header and reports duplicates and malformed
+  rows by name instead of merging them quietly.
+- The page loads two Google Fonts stylesheets at view time, like the
+  previous version did. With no network, the page still works and falls
+  back to system fonts.
 
-Not done, on purpose, for a local demo: no TLS, no rate limiting on login,
-tokens live in server memory and die with the process. Put it behind a real
-proxy and a real secret before it leaves the building.
+Not done, on purpose, for a local tool: there is no sync, no sharing
+and no access control, because there is no second user to protect
+anything from. Anyone with the device and the browser profile can open
+the saved scenarios, so this is a single-owner tool, not a shared one.
