@@ -1,4 +1,4 @@
-# Security — COD Leak Calculator
+# Security, COD Leak Calculator
 
 Static app posture, stated plainly. This version has no server, no
 accounts and no database, so there is nothing to log into and nothing

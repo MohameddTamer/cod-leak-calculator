@@ -1,4 +1,4 @@
-# Critique — COD Leak Calculator
+# Critique, COD Leak Calculator
 
 ## Redesign pass, 2026-10-24 (kinetic type money lab)
 
@@ -18,9 +18,9 @@ file was touched at all.
 **Evidence.**
 - Tests before: `tests/test_api.py` passed 26/26.
 - Tests after: identical, 26/26, with no test edits.
-- Numbers unchanged: the seeded scenarios compute exactly as before —
+- Numbers unchanged: the seeded scenarios compute exactly as before,
   "October as it happened" loses 36,250 EGP a month, "If confirmation calls
-  land" 26,100, "Black Friday volume, same rate" 94,250 — verified by
+  land" 26,100, "Black Friday volume, same rate" 94,250, verified by
   recomputing from the seeded inputs after the redesign. The frontend math
   (`calcValues`) is byte-for-byte the formula the old page used; a slider
   cannot produce a value the number input could not.

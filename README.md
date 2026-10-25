@@ -30,7 +30,7 @@ No backend, no database, no dependencies. `index.html` is the page, `style.css` 
 
 ## What changed from the old version
 
-The previous version was a Python REST API over SQLite with logins and per-store scoping. That whole layer is gone: there are no accounts, no tokens, and no separate stores. Each scenario carries an optional store label, just text on the scenario, and names are unique across the whole list instead of per store. Everything else — the maths, the seed figures, the import rules, the comparison order — is the same as it was.
+The previous version was a Python REST API over SQLite with logins and per-store scoping. That whole layer is gone: there are no accounts, no tokens, and no separate stores. Each scenario carries an optional store label, just text on the scenario, and names are unique across the whole list instead of per store. Everything else, the maths, the seed figures, the import rules, the comparison order, is the same as it was.
 
 ## Tests
 
